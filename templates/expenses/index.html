@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if not request.user.is_authenticated %}
+    <script>
+        window.location.href = '{% url "authentication:login" %}';
+    </script>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Expenses</li>
+                    <li class="breadcrumb-item"><a href="{% url 'expenses:add_expense' %}">Add expense</a></li>
+                </ol>
+                <a href="{% url 'expenses:add_expense' %}"><button class="btn btn-sm btn-primary add-expense-btn">Add expense</button></a>
+            </div>
+            {% include 'messages.html' %}
+        </div>
+    </div>
+    <div class="row">
+{#      <div class="col-md-8"></div>#}
+      <div class="col-md-12">
+
+        <div class="form-group">
+          <input type="text" class="form-control" id="searchField" placeholder="Search...">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+        {% if expenses %}
+            <div class="app-table">
+                <table class="table table-hover table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" style="width: 12.5%">Data</th>
+                        <th scope="col" style="width: 12.5%">Amount {% if currency %}({{ currency|slice:3 }}){% endif %}</th>
+                        <th scope="col" style="width: 20%">Category</th>
+                        <th scope="col" style="width: 42.5%">Description</th>
+                        <th scope="col" style="width: 12.5%">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for expense in page_obj %}
+                        <tr>
+                            <td >{{ expense.date }}</td>
+                            <td>{{ expense.amount }}</td>
+                            <td>{{ expense.category }}</td>
+                            <td>
+                                {% if expense.description|length > 30 %}
+                                    <p style="margin: 0px;">
+                                        {{ expense.description|slice:":50" }}<span id="dots">...</span>
+                                        <span id="more">{{expense.description|slice:"50:"}}</span>
+                                        <button onclick="myFunction()" id="myBtn" class="read-more-btn">Read more</button>
+                                    </p>
+                                {% else %}
+                                    {{ expense.description }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'expenses:edit_expense' expense.pk %}"><button type="button" class="btn btn-primary btn-sm btn-outline-primary" style="width: 45%">
+                                    <i class="far fa-edit"></i>
+                                </button></a>
+                                <a href="{% url 'expenses:delete_expense' expense.pk %}"><button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-secondary btn-sm btn-outline-danger" style="width: 45%; margin-left: 6%;">
+                                    <i class="fas fa-trash"></i>
+                                </button></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                {% else %}
+                    <h3>No expenses yet, start by adding an expense</h3>
+                {% endif %}
+                </table>
+            </div>
+{#           SEARCH RESULT TABLE   #}
+            <h3 class="no-results" style="display: none;">No results found...</h3>
+            <div class="table-output" style="display: none;">
+              <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col" style="width: 12.5%">Data</th>
+                    <th scope="col" style="width: 12.5%">Amount ({{ currency|slice:4 }})</th>
+                    <th scope="col" style="width: 20%">Category</th>
+                    <th scope="col" style="width: 42.5%">Description</th>
+                    <th scope="col" style="width: 12.5%">Action</th>
+                  </tr>
+                </thead>
+
+                <tbody  class="table-body">
+                </tbody>
+              </table>
+            </div>
+
+            {% if expenses %}
+            <div class="pagination-container">
+            <div class="">
+                Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} total ({{ expenses.all.count }})
+            </div>
+            <ul class="pagination align-right float-right mr-auto">
+              {% if page_obj.has_previous %}
+                  <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}><a class="page-link" href="?page=1">&laquo; 1</a></li>
+                  <li class="page-item"> <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+              {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="#">{{ page_obj.number }} <span class="sr-only">(current)</span></a>
+                </li>
+              {% if page_obj.has_next %}
+                  <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                  <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages}} &raquo;</a></li>
+              {% endif %}
+            </ul>
+            </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/searchExpenses.js' %}"></script>
+{% endblock content %}

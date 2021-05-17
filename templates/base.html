@@ -1,0 +1,61 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>TrulyExpenses {% block title %} {% endblock %}</title>
+
+    <!-- Font Awesome -->
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" />
+    <link href="{% static 'css/main.css'%}" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet" />
+  </head>
+  <body>
+
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{% url 'expenses:index' %}">Finance control</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+   <ul class="navbar-nav px-3" style="display: flex; flex-direction: row; align-items: center;">
+       <li class="nav-item text-nowrap" style="margin-right: 30px;">
+          <span class="nav-link" href="">
+            Welcome, {{request.user.username}}
+          </span>
+        </li>
+    <li class="nav-item text-nowrap" style="margin-right: 30px;">
+      <a  class="nav-link" href="{% url 'authentication:logout' %}">Sign out</a>
+    </li>
+  </ul>
+</header>
+
+<div class="container-fluid">
+  <div class="row">
+        {#      SIDEBAR        #}
+      {% include 'sidebar.html'  %}
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+     {% block content %}
+
+     {% endblock content %}
+    </main>
+  </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+     <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>

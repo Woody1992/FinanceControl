@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+  <h5 style="text-align: -webkit-center;">Preferred Currency</h5>
+  {% include 'messages.html' %}
+  <form action="{% url 'usersettings:settings' %}" method="post">
+    {% csrf_token %}
+        <div class="input-group" style="place-content: center;">
+            <select name="currency" class="custom-select" id="inputGroupSelect04" style="width: 75%;">
+                {% if user_preferences.currency%}
+                    <option name="currency" selected value="{{user_preferences.currency}}">{{user_preferences.currency}} (Current)</option>
+                {% endif %}
+                {% for currency in currencies %}
+                    <option value="{{ currency.name }} - {{ currency.value }}">{{ currency.name }} - {{ currency.value }}</option>
+                {% endfor %}
+            </select>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" value="Save" >Button</button>
+            </div>
+        </div>
+  </form>
+</div>
+
+<hr />
+{% endblock content %}
